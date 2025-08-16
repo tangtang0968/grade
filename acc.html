@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>成績加權計算器</title>
+  <style>
+    :root {
+      --primary-color: #6a89cc;
+      --secondary-color: #f1f2f6;
+      --text-color: #333;
+      --border-color: #ccc;
+      --card-bg: #fff;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-top: 0;
+      font-size: 2em;
+    }
+
+    .subject-list {
+      text-align: left;
+      margin: 20px 0;
+    }
+
+    .subject-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .subject-item label {
+      font-weight: bold;
+      width: 60px;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1em;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      flex-grow: 1;
+      max-width: 180px;
+    }
+
+    button:hover {
+      background-color: #5579b8;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #result {
+      margin-top: 25px;
+      padding: 15px;
+      background-color: var(--secondary-color);
+      border-radius: 10px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: var(--primary-color);
+      min-height: 20px;
+    }
+
+    #history {
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    #history h3 {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 5px;
+    }
+
+    #historyList {
+      list-style-type: none;
+      padding: 0;
+      margin: 15px 0 0 0;
+    }
+
+    #historyList li {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>成績加權計算器</h1>
+    <p>科目：國、數、英、自、地、歷、公</p>
+    
+    <div class="subject-list">
+      <div class="subject-item">
+        <label for="chinese">國:</label>
+        <input type="number" id="chinese">
+      </div>
+      <div class="subject-item">
+        <label for="math">數:</label>
+        <input type="number" id="math">
+      </div>
+      <div class="subject-item">
+        <label for="english">英:</label>
+        <input type="number" id="english">
+      </div>
+      <div class="subject-item">
+        <label for="science">自:</label>
+        <input type="number" id="science">
+      </div>
+      <div class="subject-item">
+        <label for="geo">地:</label>
+        <input type="number" id="geo">
+      </div>
+      <div class="subject-item">
+        <label for="history">歷:</label>
+        <input type="number" id="history">
+      </div>
+      <div class="subject-item">
+        <label for="civic">公:</label>
+        <input type="number" id="civic">
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button onclick="calculate()">計算加權平均</button>
+      <button onclick="resetInputs()">歸零</button>
+      <button onclick="clearHistory()">清除歷史紀錄</button>
+    </div>
+
+    <div id="result"></div>
+    
+    <div id="history">
+      <h3>歷史紀錄</h3>
+      <ul id="historyList"></ul>
+    </div>
+  </div>
+
+  <script>
+    let historyRecords = [];
+
+    function calculate() {
+      let chinese = Number(document.getElementById("chinese").value) || 0;
+      let math = Number(document.getElementById("math").value) || 0;
+      let english = Number(document.getElementById("english").value) || 0;
+      let science = Number(document.getElementById("science").value) || 0;
+      let geo = Number(document.getElementById("geo").value) || 0;
+      let history = Number(document.getElementById("history").value) || 0;
+      let civic = Number(document.getElementById("civic").value) || 0;
+
+      let weightedSum = chinese*5 + math*4 + english*3 + science*3 + geo*1 + history*1 + civic*1;
+      let average = (weightedSum / 18).toFixed(2);
+
+      document.getElementById("result").innerText = "加權平均: " + average;
+
+      // 存進紀錄
+      let record = `國:${chinese}, 數:${math}, 英:${english}, 自:${science}, 地:${geo}, 歷:${history}, 公:${civic} ➝ 平均:${average}`;
+      historyRecords.push(record);
+      updateHistory();
+    }
+
+    function updateHistory() {
+      let list = document.getElementById("historyList");
+      list.innerHTML = "";
+      historyRecords.forEach((rec) => {
+        let li = document.createElement("li");
+        li.textContent = rec;
+        list.appendChild(li);
+      });
+    }
+
+    function resetInputs() {
+      document.querySelectorAll("input").forEach(input => input.value = "");
+      document.getElementById("result").innerText = "";
+    }
+
+    function clearHistory() {
+      historyRecords = [];
+      updateHistory();
+    }
+  </script>
+</body>
+</html>
